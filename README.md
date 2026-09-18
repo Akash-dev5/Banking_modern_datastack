@@ -1,22 +1,16 @@
 # 🏦 Banking Modern Datastack
 
 ![Snowflake](https://img.shields.io/badge/Snowflake-29B5E8?logo=snowflake&logoColor=white)
-![DBT](https://img.shields.io/badge/dbt-FF694B?logo=dbt&logoColor=white)
+![dbt](https://img.shields.io/badge/dbt-FF694B?logo=dbt&logoColor=white)
 ![Apache Airflow](https://img.shields.io/badge/Apache%20Airflow-017CEE?logo=apacheairflow&logoColor=white)
 ![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-231F20?logo=apachekafka&logoColor=white)
-![Debezium](https://img.shields.io/badge/Debezium-EF3B2D?logo=apache&logoColor=white)
+![Debezium](https://img.shields.io/badge/Debezium-EF3B2D?logo=debezium&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white)
-![CI/CD](https://img.shields.io/badge/CI%2FCD-000000?logo=githubactions&logoColor=white)
-
-# Banking Modern Datastack
+![AWS](https://img.shields.io/badge/AWS-S3%20%7C%20SQS%20%7C%20EC2-FF9900?logo=amazonaws&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF?logo=githubactions&logoColor=white)
 
 [![CI](https://github.com/Akash-dev5/banking_datastack/actions/workflows/ci.yml/badge.svg)](https://github.com/Akash-dev5/banking_datastack/actions/workflows/ci.yml)
-![Snowflake](https://img.shields.io/badge/Snowflake-Data_Warehouse-29B5E8?logo=snowflake&logoColor=white)
-![dbt](https://img.shields.io/badge/dbt-Transformations-FF694B?logo=dbt&logoColor=white)
-![Apache Airflow](https://img.shields.io/badge/Airflow-Orchestration-017CEE?logo=apacheairflow&logoColor=white)
-![AWS](https://img.shields.io/badge/AWS-S3%20%7C%20SQS%20%7C%20EC2-FF9900?logo=amazonaws&logoColor=white)
 
 > **An event-driven banking data platform with a strong focus on SQL, Snowflake, dbt, and data modeling.**  
 > PostgreSQL changes are captured with Debezium and Kafka, landed in Amazon S3, loaded into Snowflake through Airflow, and transformed into analytics-ready models with dbt.
@@ -165,27 +159,27 @@ The following screenshots show the main parts of the working pipeline and deploy
 
 ### 1. dbt Transformation Pipeline
 
-![Successful dbt transformation pipeline](01-dbt-success.png)
+<img width="1911" height="909" alt="DBT Successful Pipeline" src="https://github.com/user-attachments/assets/e4bde980-9baa-464e-84f4-cfad202bc66f" />
 
 ### 2. S3 → Snowflake Load
 
-![Successful S3 to Snowflake load](02-s3-to-snowflake-success.png)
+<img width="1914" height="902" alt="Snowflake Successful Pipeline" src="https://github.com/user-attachments/assets/68816a7d-91e3-4cff-9034-db324ab761c8" />
 
 ### 3. Airflow Running on EC2
 
-![Airflow production stack on EC2](03-ec2-airflow-stack.png)
+<img width="980" height="286" alt="EC2 Airflow Stack" src="https://github.com/user-attachments/assets/b45ab174-0bea-46f8-b8ea-1ce11c1f0a76" />
 
 ### 4. CI Workflow
 
-![Successful CI workflow](04-ci-success.png)
+<img width="1900" height="902" alt="CI Successful" src="https://github.com/user-attachments/assets/bd41a1ea-ce13-4260-b0ac-2f1bfcbed9d9" />
 
 ### 5. CD Deployment
 
-![Successful CD deployment](05-cd-success.png)
+<img width="1894" height="820" alt="CD Successful" src="https://github.com/user-attachments/assets/cfe0f5f3-cb20-437d-ba9e-7e46cb84ed78" />
 
 ### 6. GitHub Container Registry
 
-![Airflow image published to GHCR](06-ghcr-image.png)
+<img width="1098" height="423" alt="GHCR SHA-Tagged Image" src="https://github.com/user-attachments/assets/19172406-58f8-43ed-849c-0592a0338b31" />
 
 ---
 
@@ -256,4 +250,11 @@ Snowflake setup scripts are kept under `snowflake/setup/`, while the transformat
 
 `SQL` · `Snowflake` · `dbt` · `Data Engineering`
 
+[akash.data55@gmail.com](mailto:akash.data55@gmail.com)  
 [GitHub](https://github.com/Akash-dev5)
+
+
+
+
+
+
