@@ -23,7 +23,8 @@
 
 ## Architecture
 
-![Banking Modern Datastack architecture](architecture-overview.png)
+<img width="2042" height="770" alt="Banking Modern Datastack Architecture" src="https://github.com/user-attachments/assets/409763ac-3705-4e0a-b26d-ffe858e8d96a" />
+
 
 The project is split between local development, AWS services, Snowflake, and an Airflow environment running on EC2.
 
@@ -145,8 +146,12 @@ GitHub Actions handles validation and deployment of the Airflow environment.
 
 **CD**
 
+- Builds and publishes the Airflow image to GHCR
+- Tags the image with `latest` and the Git commit SHA
+- Deploys the selected image to the Airflow environment on EC2
+
 ```text
-GitHub Actions → GHCR → EC2 → Airflow
+GitHub → GitHub Actions → GHCR → EC2 → Airflow
 ```
 
 The Airflow image is published with both `latest` and the Git commit SHA, so a deployment can be traced back to the corresponding revision.
