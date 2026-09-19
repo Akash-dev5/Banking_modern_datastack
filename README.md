@@ -23,7 +23,9 @@
 
 ## Architecture
 
-<img width="2042" height="770" alt="Banking Modern Datastack Architecture" src="https://github.com/user-attachments/assets/409763ac-3705-4e0a-b26d-ffe858e8d96a" />
+<img width="2042" height="770" alt="Banking Modern Datastack Architecture" src="https://github.com/user-attachments/assets/3432dd77-7474-4c61-b8f0-538fb50d09bc" />
+
+
 
 
 The project is split between local development, AWS services, Snowflake, and an Airflow environment running on EC2.
@@ -167,9 +169,11 @@ The following screenshots show the main parts of the working pipeline and deploy
 <img width="1911" height="909" alt="DBT Successful Pipeline" src="https://github.com/user-attachments/assets/e4bde980-9baa-464e-84f4-cfad202bc66f" />
 
 
+
 ### 2. S3 → Snowflake Load
 
 <img width="1914" height="902" alt="Snowflake Successful Pipeline" src="https://github.com/user-attachments/assets/68816a7d-91e3-4cff-9034-db324ab761c8" />
+
 
 
 ### 3. Airflow Running on EC2
@@ -177,14 +181,17 @@ The following screenshots show the main parts of the working pipeline and deploy
 <img width="980" height="286" alt="EC2 Airflow Stack" src="https://github.com/user-attachments/assets/b45ab174-0bea-46f8-b8ea-1ce11c1f0a76" />
 
 
+
 ### 4. CI Workflow
 
 <img width="1900" height="902" alt="CI Successful" src="https://github.com/user-attachments/assets/bd41a1ea-ce13-4260-b0ac-2f1bfcbed9d9" />
 
 
+
 ### 5. CD Deployment
 
 <img width="1894" height="820" alt="CD Successful" src="https://github.com/user-attachments/assets/cfe0f5f3-cb20-437d-ba9e-7e46cb84ed78" />
+
 
 
 ### 6. GitHub Container Registry
