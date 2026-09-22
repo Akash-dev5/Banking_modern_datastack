@@ -9,7 +9,7 @@ WITH enriched_transactions AS (
         t.related_account_id,
         t.status,
         t.transaction_type,
-        t.transaction_time,
+        t.ingested_at,
         CURRENT_TIMESTAMP() AS load_timestamp
 
     FROM {{ref('stg_transactions')}} AS t
@@ -18,6 +18,9 @@ WITH enriched_transactions AS (
         ON t.account_id = a.account_id
         AND a.is_current = TRUE)
 
+    {% if is_incremental() %}
+        WHERE t.ingested_at > (SELECT MAX(ingested_at) FROM {{ this }})
+    {% endif %}
 
 SELECT * 
 FROM enriched_transactions

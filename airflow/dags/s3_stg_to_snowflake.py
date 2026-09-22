@@ -34,7 +34,13 @@ def copy_table(table_name):
     try:
         copy_sql = f"""
             COPY INTO BANKING_PROJECT.RAW.{table_name.upper()}
-            FROM @BANKING_PROJECT.RAW.s3_banking_stage/{table_name}/
+                (v, INGESTED_AT)
+            
+            FROM (
+                SELECT $1,
+                CURRENT_TIMESTAMP()
+                FROM @BANKING_PROJECT.RAW.s3_banking_stage/{table_name}/
+            )
             FILE_FORMAT=(TYPE=PARQUET)
             Force = FALSE
             ON_ERROR='ABORT_STATEMENT';

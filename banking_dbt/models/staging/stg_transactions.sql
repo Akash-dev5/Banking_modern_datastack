@@ -9,8 +9,10 @@ WITH ranked AS (
         v:related_account_id::NUMBER AS related_account_id,
         v:status::VARCHAR AS status,
         v:created_at::TIMESTAMP_TZ AS transaction_time,
-        CURRENT_TIMESTAMP AS load_timestamp,
 
+        INGESTED_AT AS ingested_at,
+
+        --deduplication logic
         ROW_NUMBER() OVER (PARTITION BY v:id::NUMBER ORDER BY v:created_at::TIMESTAMP_TZ DESC) AS rn
 
     FROM {{ source('banking', 'transactions') }}
@@ -24,6 +26,6 @@ SELECT
     related_account_id,
     status,
     transaction_time,
-    load_timestamp
+    ingested_at
 FROM ranked
 WHERE rn = 1
