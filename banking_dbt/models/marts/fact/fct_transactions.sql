@@ -1,4 +1,4 @@
-{{config( materialized='incremental', unique_key='transaction_id')}}
+{{config(materialized='incremental', unique_key='transaction_id')}}
 
 WITH enriched_transactions AS (
     SELECT
