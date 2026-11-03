@@ -16,11 +16,12 @@ WITH enriched_transactions AS (
 
     LEFT JOIN {{ref('dim_accounts')}} AS a
         ON t.account_id = a.account_id
-        AND a.is_current = TRUE)
+        AND a.is_current = TRUE
 
     {% if is_incremental() %}
         WHERE t.ingested_at > (SELECT MAX(ingested_at) FROM {{ this }})
     {% endif %}
+)
 
 SELECT * 
 FROM enriched_transactions
