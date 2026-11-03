@@ -6,7 +6,14 @@ WITH ranked AS (
         v:email::VARCHAR AS email,
         v:created_at::TIMESTAMP_TZ AS created_at,
         CURRENT_TIMESTAMP AS load_timestamp,
-        ROW_NUMBER() OVER (PARTITION BY v:id::NUMBER ORDER BY v:created_at::TIMESTAMP_TZ DESC) AS rn
+        
+        -- Keep the most recently LOADED version of each customer.
+        -- created_at never changes on update, so it cannot tell versions apart;
+        -- INGESTED_AT (set by COPY INTO) does. created_at is only a tiebreaker.
+        ROW_NUMBER() OVER (
+            PARTITION BY v:id::NUMBER
+            ORDER BY INGESTED_AT DESC, v:created_at::TIMESTAMP_TZ DESC
+        ) AS rn
 
     FROM {{ source('banking', 'customers') }}
 )

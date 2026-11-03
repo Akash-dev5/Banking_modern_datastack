@@ -2,24 +2,28 @@ models:
   - name: stg_transactions
     columns:
       - name: transaction_id
-        tests:
-          - not_null
-          - unique
-
+        tests: [not_null, unique]
       - name: account_id
         tests:
           - not_null
           - relationships:
               to: ref('dim_accounts')
               field: account_id
+      - name: transaction_type
+        tests:
+          - accepted_values:
+              values: ['DEPOSIT', 'WITHDRAWAL', 'TRANSFER']
+      - name: amount
+        tests: [not_null]
 
   - name: dim_accounts
     columns:
       - name: account_id
         tests:
           - not_null
-          - unique
-
+          - unique:
+              config:
+                where: "is_current = true"
       - name: customer_id
         tests:
           - not_null
@@ -27,23 +31,22 @@ models:
               to: ref('dim_customers')
               field: customer_id
 
+  - name: dim_customers
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique:
+              config:
+                where: "is_current = true"
+
   - name: fct_transactions
     columns:
       - name: transaction_id
-        tests:
-          - not_null
-          - unique
-
+        tests: [not_null, unique]
       - name: account_id
         tests:
           - not_null
           - relationships:
               to: ref('dim_accounts')
               field: account_id
-
-  - name: dim_customers
-    columns:
-      - name: customer_id
-        tests:
-          - not_null
-          - unique

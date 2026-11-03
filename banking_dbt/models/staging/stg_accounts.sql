@@ -7,7 +7,11 @@ WITH ranked AS (
         v:currency::VARCHAR AS currency,
         v:created_at::TIMESTAMP_TZ AS created_at,
         CURRENT_TIMESTAMP AS load_timestamp,
-        ROW_NUMBER() OVER (PARTITION BY v:id::NUMBER ORDER BY v:created_at::TIMESTAMP_TZ DESC) AS rn
+
+        ROW_NUMBER() OVER (
+            PARTITION BY v:id::NUMBER
+            ORDER BY INGESTED_AT DESC, v:created_at::TIMESTAMP_TZ DESC
+        ) AS rn
 
     FROM {{ source('banking', 'accounts') }}
 )

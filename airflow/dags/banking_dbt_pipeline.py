@@ -4,7 +4,7 @@ from pathlib import Path
 from airflow.sdk import dag, Asset
 from cosmos import (DbtTaskGroup, ProjectConfig, ProfileConfig, ExecutionConfig)
 
-DBT_PROJECT_PATH = Path("/home/airflow/banking_dbt")
+DBT_PROJECT_PATH = Path("/home/airflow/banking_dbt") #using Path to use it to construct another path.
 DBT_PROFILES_PATH = DBT_PROJECT_PATH / ".dbt" / "profiles.yml"
 DBT_EXECUTABLE = "/home/airflow/dbt_venv/bin/dbt"
 

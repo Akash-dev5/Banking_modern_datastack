@@ -9,6 +9,12 @@ import logging
 #from dotenv import load_dotenv
 
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,18 +27,19 @@ consumer = KafkaConsumer(
     'banking_server.public.transactions',
     bootstrap_servers=os.getenv("KAFKA_BOOTSTRAP"),
     auto_offset_reset='earliest',
-    enable_auto_commit=True,
+    enable_auto_commit=False,
     group_id=os.getenv("KAFKA_GROUP"),
-    value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+    # Debezium can emit empty "tombstone" messages (value=None) after deletes.
+    value_deserializer=lambda x: json.loads(x.decode('utf-8')) if x else None,
 )
 
-# MinIO client
+# S3 client
 s3_client = boto3.client(
-        's3',
-        aws_access_key_id=os.getenv("S3_ACCESS_KEY"),
-        aws_secret_access_key=os.getenv("S3_SECRET_KEY"),
-        region_name=os.getenv("S3_REGION")
-    )
+    's3',
+    aws_access_key_id=os.getenv("S3_ACCESS_KEY"),
+    aws_secret_access_key=os.getenv("S3_SECRET_KEY"),
+    region_name=os.getenv("S3_REGION"),
+)
 
 bucket = os.getenv("S3_BUCKET")
 
@@ -86,7 +93,7 @@ def upload_to_s3(table_name, records):
 BATCH_TARGETS = {
     'banking_server.public.customers': 50,
     'banking_server.public.accounts': 100,
-    'banking_server.public.transactions': 250
+    'banking_server.public.transactions': 250,
 }
 
 buffer = {
@@ -100,7 +107,12 @@ logger.info("Connected to Kafka. Listening for messages...")
 for message in consumer:
     topic = message.topic
     event = message.value
-    payload = event.get("payload", {})
+
+    # Skip tombstones / empty messages
+    if not event:
+        continue
+
+    payload = event.get("payload") or {}
     record = payload.get("after")  
 
     # Only take the actual row
@@ -115,57 +127,51 @@ for message in consumer:
     )
 
 
-    if batch_complete:
-        logger.info("Complete batch received. Uploading to S3...")
+    if  not batch_complete:
+            continue
 
-        # Upload customers
-        upload_to_s3(
-            "customers",
-            buffer["banking_server.public.customers"]
-        )
+    logger.info("Complete batch received. Uploading to S3...")
+    # Upload customers
+    upload_to_s3("customers",buffer["banking_server.public.customers"])
 
-        # Upload accounts
-        upload_to_s3(
-            "accounts",
-            buffer["banking_server.public.accounts"]
-        )
+    # Upload accounts
+    upload_to_s3("accounts",buffer["banking_server.public.accounts"])
 
-        # Upload transactions
-        upload_to_s3(
-            "transactions",
-            buffer["banking_server.public.transactions"]
-        )
+    # Upload transactions
+    upload_to_s3("transactions",buffer["banking_server.public.transactions"])
 
-
-        #Clear buffer for next batch
-        for topic in buffer:
-            buffer[topic] = []
 
 
 
         #------Create batch-complete marker------
 
+    batch_id = datetime.now(timezone.utc).strftime(
+        "%Y%m%d_%H%M%S%f"
+    )
 
-        batch_id = datetime.now(timezone.utc).strftime(
-            "%Y%m%d_%H%M%S%f"
-        )
+    marker_key = (
+        f"_batch_complete/"
+        f"batch_{batch_id}.done"
+    )
 
-        marker_key = (
-            f"_batch_complete/"
-            f"batch_{batch_id}.done"
-        )
+    s3_client.put_object(
+        Bucket=bucket,
+        Key=marker_key,
+        Body=b""
+    )
 
-        s3_client.put_object(
-            Bucket=bucket,
-            Key=marker_key,
-            Body=b""
-        )
+    logger.info(
+        "✅ COMPLETE BATCH uploaded. "
+        "Marker created: s3://%s/%s",
+        bucket,
+        marker_key
+    )
 
-        logger.info(
-            "✅ COMPLETE BATCH uploaded. "
-            "Marker created: s3://%s/%s",
-            bucket,
-            marker_key
-        )
+    #Clear buffer for next batch
+    for topic in buffer:
+        buffer[topic] = []
 
-        logger.info("Batch complete: %s", marker_key)
+    # Commit offsets last. A crash before this line means the batch is re-read
+    # (possible duplicate files, which the staging models deduplicate).
+    consumer.commit()
+    logger.info("Offsets committed.")

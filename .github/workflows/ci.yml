@@ -60,7 +60,7 @@ jobs:
         working-directory: banking_dbt
         run: |
           dbt --version
-          dbt parse
+          dbt build
         
       - name: Build Airflow image
         run: |
